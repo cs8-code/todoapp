@@ -9,6 +9,7 @@ import {
     ListItem,
     ListItemText,
     IconButton,
+    Checkbox,
     Paper,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -47,6 +48,16 @@ function App() {
             .catch((err) => console.error("Error deleting task:", err));
     };
 
+    // Toggle task completion
+    const toggleTask = (id) => {
+        fetch(`/todos/${id}/toggle`, { method: "PUT" })
+            .then((res) => res.json())
+            .then((updated) =>
+                setTasks(tasks.map((t) => (t.id === id ? updated : t)))
+            )
+            .catch((err) => console.error("Error toggling task:", err));
+    };
+
     return (
         <Container maxWidth="sm" sx={{ mt: 8 }}>
             <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
@@ -79,7 +90,16 @@ function App() {
                                 </IconButton>
                             }
                         >
-                            <ListItemText primary={task.title} />
+                            <Checkbox
+                                checked={task.completed}
+                                onChange={() => toggleTask(task.id)}
+                            />
+                            <ListItemText primary={task.title}
+                            sx={{
+                                textDecoration: task.completed ? "line-through" : "none",
+                                color: task.completed ? "gray" : "inherit",
+                            }}
+                            />
                         </ListItem>
                     ))}
                 </List>

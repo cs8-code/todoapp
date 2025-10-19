@@ -44,6 +44,15 @@ public class TodoController {
                 .orElse(null);
     }
 
+    @PutMapping("/{id}/toggle")
+    public Todo toggleCompleted(@PathVariable Long id) {
+        Todo todo = todoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Todo not found"));
+        todo.setCompleted(!todo.isCompleted());
+        return todoRepository.save(todo);
+    }
+
+
     @DeleteMapping("/{id}")
     public String deleteTodo(@PathVariable Long id) {
         todoRepository.deleteById(id);
